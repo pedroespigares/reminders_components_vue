@@ -8,19 +8,23 @@
   let recordatorios;
   
   if(localStorage.getItem("recordatorios") != null){
-    recordatorios = ref(JSON.parse(localStorage.getItem("recordatorios")));
+    recordatorios = ref({
+      array: JSON.parse(localStorage.getItem("recordatorios"))
+  });
   } else {
-    recordatorios = ref([]);
+    recordatorios = ref({
+      array: []
+    });
   }
 </script>
 
 <template>
-  <Header :recordatorios="recordatorios"/>
-  <Completed :recordatorios="recordatorios"/>
+  <Header :recordatorios="recordatorios.array"/>
+  <Completed :recordatorios="recordatorios.array"/>
   <hr/>
   <main>
     <div id="remindersContainer">
-      <Reminder v-for="recordatorio in recordatorios" :key="recordatorio.id" :recordatorio="recordatorio" :recordatorios="recordatorios" />
+      <Reminder v-for="recordatorio in recordatorios.array" :key="recordatorio.id" :recordatorio="recordatorio" :recordatorios="recordatorios.array" />
     </div>
   </main>
   <Footer />

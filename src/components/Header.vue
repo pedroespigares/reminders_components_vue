@@ -20,7 +20,7 @@ function nuevaNota(array){
             fecha: Date.now()
         };
         array.push(nuevaNota);
-        texto = "";
+        texto = ref("");
     }
     localStorage.setItem("recordatorios", JSON.stringify(array));
 }
