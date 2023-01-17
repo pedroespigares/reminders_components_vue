@@ -1,30 +1,22 @@
 <script setup>
-defineProps({
-  recordatorio: {
-    type: Object,
-    required: true,
-  },
+var props = defineProps(["recordatorio"]);
 
-  recordatorios: {
-        type: Array,
-        required: true,
-    },
-});
+var emit = defineEmits(["checkNota", "borrarNota", "cambioPrioridad"]);
 
-function checkNota(recordatorio, array) {
-  recordatorio.hecho = !recordatorio.hecho;
-  localStorage.setItem("recordatorios", JSON.stringify(array));
+function notaClick(recordatorio){
+  emit("checkNota", recordatorio);
 }
 
-function borrarNota(recordatorio, array) {
-  array.splice(array.indexOf(recordatorio), 1);
-  localStorage.setItem("recordatorios", JSON.stringify(array));
+function borrarClick(recordatorio){
+  emit("borrarNota", recordatorio);
 }
 
-function cambiarPrioridad(recordatorio, prioridad, array) {
-  recordatorio.prioridad = prioridad;
-  localStorage.setItem("recordatorios", JSON.stringify(array));
+function prioridad(nuevaPrioridad){
+  props.recordatorio.prioridad = nuevaPrioridad;
+  emit("cambioPrioridad");
 }
+
+
 </script>
 
 <template>
@@ -33,17 +25,17 @@ function cambiarPrioridad(recordatorio, prioridad, array) {
       <i
         v-if="recordatorio.hecho"
         class="fa-regular fa-check-circle"
-        @click="checkNota(recordatorio, recordatorios)"
+        @click="$emit('notaClick', recordatorio)"
       ></i>
       <i
         v-else
         class="fa-regular fa-circle"
-        @click="checkNota(recordatorio, recordatorios)"
+        @click="$emit('notaClick', recordatorio)"
       ></i>
       <h2 v-bind:class="{ checked: recordatorio.hecho }">
         {{ recordatorio.titulo }}
       </h2>
-      <i class="fa-solid fa-square-minus" @click="borrarNota(recordatorio, recordatorios)"></i>
+      <i class="fa-solid fa-square-minus" @click="$emit('borrarClick',recordatorio)"></i>
     </div>
 
     <div class="reminder--data">
@@ -54,7 +46,7 @@ function cambiarPrioridad(recordatorio, prioridad, array) {
           { marked: recordatorio.prioridad == 1 },
           { not_marked: recordatorio.prioridad != 1 },
         ]"
-        @click="cambiarPrioridad(recordatorio, 1, recordatorios)"
+        @click="prioridad(1)"
       >
         <i class="fa-solid fa-arrow-down"></i>
         Low
@@ -65,7 +57,7 @@ function cambiarPrioridad(recordatorio, prioridad, array) {
           { marked: recordatorio.prioridad == 2 },
           { not_marked: recordatorio.priordad != 2 },
         ]"
-        @click="cambiarPrioridad(recordatorio, 2, recordatorios)"
+        @click="prioridad(2)"
       >
         Normal
       </button>
@@ -75,7 +67,7 @@ function cambiarPrioridad(recordatorio, prioridad, array) {
           { marked: recordatorio.prioridad == 3 },
           { not_marked: recordatorio.priordad != 3 },
         ]"
-        @click="cambiarPrioridad(recordatorio, 3, recordatorios)"
+        @click="prioridad(3)"
       >
         <i class="fa-solid fa-arrow-up"></i>
         High
@@ -88,5 +80,3 @@ function cambiarPrioridad(recordatorio, prioridad, array) {
     </div>
   </div>
 </template>
-
-<style scoped></style>

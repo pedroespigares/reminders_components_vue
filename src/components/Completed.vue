@@ -8,9 +8,12 @@ defineProps({
 });
 
 function borrarNotasCompletadas(array) {
-    array = array.filter((recordatorio) => {
-        return !recordatorio.hecho;
-    });
+    for(let i = 0; i < array.length; i++) {
+        if (array[i].hecho) {
+            array.splice(i, 1);
+            i--;
+        }
+    }
     localStorage.setItem("recordatorios", JSON.stringify(array));
 }
 
@@ -35,9 +38,9 @@ function getTotal(array) {
 <template>
     <p id="tareasPen">
       <i class="fa-solid fa-chart-column"></i>
-      <span id="pendientes">{{ getPendientes(recordatorios) }}pendientes pendientes de un total de {{ getTotal(recordatorios) }}</span>
+      <span id="pendientes">&nbsp;{{ getPendientes(recordatorios) }}&nbsp;pendientes pendientes de un total de {{ getTotal(recordatorios) }}</span>
       &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-      <span id="deleteAll" @click="borrarNotasCompletadas(recordatorios)"><i class="fa-solid fa-x"></i>Borrar tareas completadas</span>
+      <span id="deleteAll" @click="borrarNotasCompletadas(recordatorios)"><i class="fa-solid fa-x"></i>&nbsp;Borrar tareas completadas</span>
     </p>
 </template>
 

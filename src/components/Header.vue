@@ -11,16 +11,16 @@ defineProps({
 let texto = ref("");
 
 function nuevaNota(array){
-    if (texto != "") {
+    if (texto.value != "") {
         let nuevaNota = {
             id: array.length + 1,
-            titulo: texto,
+            titulo: texto.value,
             hecho: false,
             prioridad: 3,
             fecha: Date.now()
         };
         array.push(nuevaNota);
-        texto = ref("");
+        texto.value = "";
     }
     localStorage.setItem("recordatorios", JSON.stringify(array));
 }
@@ -38,7 +38,3 @@ function nuevaNota(array){
       />
     </header>
 </template>
-
-<style scoped>
-
-</style>
