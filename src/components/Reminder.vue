@@ -81,7 +81,7 @@ function prioridad(db, nuevaPrioridad, id){
       <i class="fa-regular fa-clock"></i>
       <p>
         Añadido hace
-        {{ Math.floor((Date.now() - recordatorio.fecha.toDate()) / 1000 / 60) }} minutos}
+        {{ Math.floor((Date.now() - recordatorio.fecha.toDate()) / 1000 / 60) }} minutos
       </p>
     </div>
   </div>
