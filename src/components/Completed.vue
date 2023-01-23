@@ -1,36 +1,31 @@
 <script setup>
+    import { collection, doc, deleteDoc } from '@firebase/firestore';
+    import { useCollection, useFirestore } from 'vuefire'
 
-defineProps({
-    recordatorios: {
-        type: Array,
-        required: true,
-    },
-});
+    const db = useFirestore();
 
-function borrarNotasCompletadas(array) {
-    for(let i = 0; i < array.length; i++) {
-        if (array[i].hecho) {
-            array.splice(i, 1);
-            i--;
+    const recordatorios = useCollection(collection(db, 'recordatorios'));
+
+function borrarNotasCompletadas(recordatorios) {
+    recordatorios.forEach((recordatorio) => {
+        if (recordatorio.hecho) {
+            deleteDoc(doc(db, "recordatorios", recordatorio.id));
         }
-    }
-    localStorage.setItem("recordatorios", JSON.stringify(array));
+    });
 }
 
-function getPendientes(array) {
+function getPendientes(recordatorios) {
     let pendientes = 0;
-
-    array.forEach((recordatorio) => {
+    recordatorios.forEach((recordatorio) => {
         if (!recordatorio.hecho) {
             pendientes++;
         }
     });
-
     return pendientes;
 };
 
-function getTotal(array) {
-    return array.length;
+function getTotal(recordatorios) {
+    return recordatorios.length;
 };
 
 </script>

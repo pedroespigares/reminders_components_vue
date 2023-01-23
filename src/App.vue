@@ -3,46 +3,33 @@
   import Reminder from './components/Reminder.vue';
   import Completed from './components/Completed.vue';
   import Footer from './components/Footer.vue';
-  import {ref} from 'vue';
-  import {toRaw} from 'vue';
+  import { collection, doc, deleteDoc, updateDoc } from '@firebase/firestore';
+  import { useCollection, useFirestore } from 'vuefire'
 
-  let recordatorios;
-  
-  if(localStorage.getItem("recordatorios") != null){
-    recordatorios = ref(JSON.parse(localStorage.getItem("recordatorios")));
-  } else {
-    recordatorios = ref([]);
-  }
+  const db = useFirestore();
 
-  // rawRecordatorios es una copia de recordatorios que elimina el objeto proxy de Vue
-  let rawRecordatorios = toRaw(recordatorios.value);
+  const recordatorios = useCollection(collection(db, 'recordatorios'));
 
-  // Despues lo volvemos a convertir en ref para que sea reactivo
-  rawRecordatorios = ref(rawRecordatorios);
 
-  function checkNota(recordatorio, array) {
-  recordatorio.hecho = !recordatorio.hecho;
-  localStorage.setItem("recordatorios", JSON.stringify(array));
-}
-
-  function borrarNota(recordatorio, array) {
-    array.splice(array.indexOf(recordatorio), 1);
-    localStorage.setItem("recordatorios", JSON.stringify(array));
-  }
-
-  function prioridad(){
-    recordatorios.value.sort((a, b) => {
-      return b.prioridad - a.prioridad;
+  function checkNota(id) {
+    let recordatorio = recordatorios.value.find((recordatorio) => {
+      return recordatorio.id == id;
     });
+    let hecho = recordatorio.hecho;
 
-    localStorage.setItem("recordatorios", JSON.stringify(rawRecordatorios.value));
+    updateDoc(doc(db, "recordatorios", id), {
+        hecho: !hecho,
+    });
   }
-  
+
+  function borrarNota(id) {
+    deleteDoc(doc(db, "recordatorios", id));
+  }
 </script>
 
 <template>
-  <Header :recordatorios="recordatorios"/>
-  <Completed :recordatorios="recordatorios"/>
+  <Header/>
+  <Completed/>
   <hr/>
   <main>
     <div id="remindersContainer">
@@ -50,10 +37,9 @@
       v-for="recordatorio in recordatorios"
       :recordatorio="recordatorio"
       :key="recordatorio.id" 
-      @nota-click="checkNota(recordatorio, rawRecordatorios)"
-      @borrar-click="borrarNota(recordatorio, rawRecordatorios)"
-      @cambioPrioridad="prioridad"/>
+      @nota-click="checkNota(recordatorio.id)"
+      @borrar-click="borrarNota(recordatorio.id)"/>
     </div>
   </main>
-  <Footer />
+  <Footer/>
 </template>

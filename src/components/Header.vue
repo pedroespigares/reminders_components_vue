@@ -1,28 +1,23 @@
 <script setup>
  import {ref} from 'vue';
+ import { collection, addDoc } from '@firebase/firestore';
+ import { useFirestore } from 'vuefire'
 
-defineProps({
-    recordatorios: {
-        type: Array,
-        required: true,
-    },
-});
+
+const db = useFirestore();
 
 let texto = ref("");
 
-function nuevaNota(array){
+function nuevaNota(db){
     if (texto.value != "") {
-        let nuevaNota = {
-            id: array.length + 1,
+        const docRef = addDoc(collection(db, "recordatorios"), {
             titulo: texto.value,
             hecho: false,
             prioridad: 3,
-            fecha: Date.now()
-        };
-        array.push(nuevaNota);
+            fecha: new Date(),
+        });
         texto.value = "";
     }
-    localStorage.setItem("recordatorios", JSON.stringify(array));
 }
 </script>
 
@@ -34,7 +29,7 @@ function nuevaNota(array){
         id="reminder"
         placeholder="¿Qué quieres recordar?"
         v-model="texto"
-        @keyup.enter="nuevaNota(recordatorios)"
+        @keyup.enter="nuevaNota(db)"
       />
     </header>
 </template>
