@@ -3,6 +3,7 @@
   import Reminder from './components/Reminder.vue';
   import Completed from './components/Completed.vue';
   import Footer from './components/Footer.vue';
+  import Registro from './components/Registro.vue';
   import { collection, doc, deleteDoc, updateDoc } from '@firebase/firestore';
   import { useCollection, useFirestore } from 'vuefire'
 
@@ -28,7 +29,7 @@
 </script>
 
 <template>
-  <Header/>
+  <!-- <Header/>
   <Completed/>
   <hr/>
   <main>
@@ -41,5 +42,6 @@
       @borrar-click="borrarNota(recordatorio.id)"/>
     </div>
   </main>
-  <Footer/>
+  <Footer/> -->
+  <Registro/>
 </template>
